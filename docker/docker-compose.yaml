@@ -1,0 +1,124 @@
+version: "3.8"
+
+services:
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "80:8080"
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:9092,kafka-2:9092,kafka-3:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+
+
+  zookeeper:
+    image: zookeeper
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper_data:/bitnami"
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: yes
+      ZOOKEEPER_CLIENT_PORT: 21281
+
+
+  kafka-1:
+    image: wurstmeister/kafka
+    ports:
+      - "9095:9094"
+    volumes:
+      - "./kafka_data/500:/kafka"
+    environment:
+      KAFKA_BROKED_ID: 500
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_LISTENERS: INTERNAL://kafka-1:9092,OUTSIDE://kafka-1:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:9092,OUTSIDE://localhost:9095
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKS_LOG_DIRS: /kafka/logs
+    depends_on:
+      - zookeeper
+  
+
+  kafka-2:
+    image: wurstmeister/kafka
+    ports:
+      - "9096:9094"
+    volumes:
+      - "./kafka_data/501:/bitnami"
+    environment:
+      KAFKA_BROKED_ID: 501
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_LISTENERS: INTERNAL://kafka-2:9092,OUTSIDE://kafka-2:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:9092,OUTSIDE://localhost:9096
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKS_LOG_DIRS: /kafka/logs
+    depends_on:
+      - zookeeper
+  
+
+  kafka-3:
+    image: wurstmeister/kafka
+    ports:
+      - "9097:9094"
+    volumes:
+      - "./kafka_data/502:/bitnami"
+    environment:
+      KAFKA_BROKED_ID: 502
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_LISTENERS: INTERNAL://kafka-3:9092,OUTSIDE://kafka-3:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-3:9092,OUTSIDE://localhost:9097
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKS_LOG_DIRS: /kafka/logs
+    depends_on:
+      - zookeeper
+
+
+
+
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: messages
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  admin:
+    image: adminer
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - 81:8080
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+  postgres_data:
+    driver: local
+
+
+
+
+
+
+
