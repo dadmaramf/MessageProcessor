@@ -5,13 +5,22 @@ go 1.21.1
 require (
 	github.com/IBM/sarama v1.43.2
 	github.com/go-yaml/yaml v2.1.0+incompatible
-	go.uber.org/fx v1.22.1
+	github.com/lib/pq v1.10.9
 )
 
 require (
-	github.com/lib/pq v1.10.9 // indirect
+	github.com/DATA-DOG/go-sqlmock v1.5.2 // indirect
+	github.com/golang/mock v1.6.0 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/kr/text v0.2.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/stretchr/testify v1.9.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
-	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
+	golang.org/x/mod v0.19.0 // indirect
+	golang.org/x/sync v0.7.0 // indirect
+	golang.org/x/tools v0.23.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (
@@ -33,11 +42,8 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.21 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
-	go.uber.org/dig v1.17.1 // indirect
-	go.uber.org/multierr v1.10.0 // indirect
-	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/crypto v0.25.0 // indirect
 	golang.org/x/net v0.27.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
+	gotest.tools v2.2.0+incompatible
 )

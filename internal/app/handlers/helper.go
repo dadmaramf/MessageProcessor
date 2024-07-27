@@ -21,3 +21,12 @@ func decode(r *http.Request, v any) error {
 	}
 	return nil
 }
+
+type ResponseError struct {
+	Status string `json:"status"`
+	Err    string `json:"error"`
+}
+
+func errorJSON(w http.ResponseWriter, status int, err string) {
+	encode(w, status, &ResponseError{Status: http.StatusText(status), Err: err})
+}

@@ -1,14 +1,13 @@
 httpClient:
   host: "localhost"
-  port: ":8080"
+  port: "8080"
 
 postgresConnect:
   host: "localhost"
   port: ":5432"
-  user: "user1"
-  password: "changeme"
-  dbname: "tododb"
-
+  user: "user"
+  password: "password"
+  dbname: "messages"
 
 kafka:
   brockers:
