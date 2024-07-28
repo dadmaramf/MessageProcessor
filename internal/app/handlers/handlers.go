@@ -10,19 +10,19 @@ import (
 func SaveMessage(log *slog.Logger, service services.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "api.handler.SaveMessage"
-		log.With(slog.String("op", op))
+		logNew := log.With(slog.String("op", op))
 		resp := struct {
 			Message string `json:"message"`
 		}{}
 
 		if err := decode(r, &resp); err != nil {
-			log.Error("Failed to decode request", "error", err)
+			logNew.Error("Failed to decode request", "error", err)
 			errorJSON(w, http.StatusBadRequest, "Failed to decode request")
 			return
 		}
 
 		if err := service.SaveMessage(resp.Message); err != nil {
-			log.Error("Failed to save message", "error", err)
+			logNew.Error("Failed to save message", "error", err)
 			errorJSON(w, http.StatusInternalServerError, "Failed to save message")
 			return
 		}
@@ -32,11 +32,11 @@ func SaveMessage(log *slog.Logger, service services.Service) http.HandlerFunc {
 		}{"Message received successfully"}
 
 		if err := encode(w, http.StatusCreated, successMsg); err != nil {
-			log.Error("Failed to create answer", "error", err)
+			logNew.Error("Failed to create answer", "error", err)
 			errorJSON(w, http.StatusInternalServerError, "Failed to create answer")
 			return
 		}
-		log.Info("request body decoded", slog.Any("request", successMsg))
+		logNew.Info("request body decoded", slog.Any("request", successMsg))
 	}
 }
 

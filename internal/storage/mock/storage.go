@@ -35,11 +35,25 @@ func (m *MockStorage) EXPECT() *MockStorageMockRecorder {
 	return m.recorder
 }
 
+// AddProcessedMessage mocks base method.
+func (m *MockStorage) AddProcessedMessage(id int, msg string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddProcessedMessage", id, msg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddProcessedMessage indicates an expected call of AddProcessedMessage.
+func (mr *MockStorageMockRecorder) AddProcessedMessage(id, msg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddProcessedMessage", reflect.TypeOf((*MockStorage)(nil).AddProcessedMessage), id, msg)
+}
+
 // GetDownMessages mocks base method.
-func (m *MockStorage) GetDownMessages() ([]model.MessageState, error) {
+func (m *MockStorage) GetDownMessages() ([]model.Message, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetDownMessages")
-	ret0, _ := ret[0].([]model.MessageState)
+	ret0, _ := ret[0].([]model.Message)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

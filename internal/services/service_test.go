@@ -5,13 +5,16 @@ import (
 	"errors"
 	"log/slog"
 	"messageprocessor/internal/model"
+	messagereader "messageprocessor/internal/services/message_reader"
 	messagesender "messageprocessor/internal/services/message_sender"
 	mock_services "messageprocessor/internal/services/mock"
 	mock_storage "messageprocessor/internal/storage/mock"
 	"testing"
 	"time"
 
+	"github.com/IBM/sarama"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestStartProcessingMessage(t *testing.T) {
@@ -105,4 +108,59 @@ func TestStartProcessingMessage(t *testing.T) {
 			cancel()
 		})
 	}
+}
+
+type MockConsumerGroup struct {
+	mock.Mock
+}
+
+func (m *MockConsumerGroup) PauseAll() {
+	panic("unimplemented")
+}
+
+func (m *MockConsumerGroup) ResumeAll() {
+	panic("unimplemented")
+}
+
+func (m *MockConsumerGroup) Consume(ctx context.Context, topics []string, handler sarama.ConsumerGroupHandler) error {
+	args := m.Called(ctx, topics, handler)
+	return args.Error(0)
+}
+
+func (m *MockConsumerGroup) Errors() <-chan error {
+	args := m.Called()
+	return args.Get(0).(<-chan error)
+}
+
+func (m *MockConsumerGroup) Close() error {
+	args := m.Called()
+	return args.Error(0)
+}
+
+func (m *MockConsumerGroup) Pause(partitions map[string][]int32) {
+	m.Called(partitions)
+}
+
+func (m *MockConsumerGroup) Resume(partitions map[string][]int32) {
+	m.Called(partitions)
+}
+func TestStartConsumerProcessingMessage(t *testing.T) {
+	ctrl := gomock.NewController(t)
+
+	mockConsumer := new(MockConsumerGroup)
+	mockLogger := slog.Default()
+	mockStorage := mock_storage.NewMockStorage(ctrl)
+
+	reader := messagereader.New(mockConsumer, mockStorage, mockLogger)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	mockConsumer.On("Consume", mock.Anything, []string{"processedMessage"}, mock.Anything).Return(nil)
+
+	reader.StartConsumerProcessingMessage(ctx)
+
+	time.Sleep(100 * time.Millisecond)
+
+	mockConsumer.AssertCalled(t, "Consume", mock.Anything, []string{"processedMessage"}, mock.Anything)
 }

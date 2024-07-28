@@ -25,6 +25,14 @@ func NewAsyncProducer(cfg config.ConfigInterface) (sarama.AsyncProducer, error) 
 	return producer, err
 }
 
+func NewConsumerGroup(cfg config.ConfigInterface, groupID string) (sarama.ConsumerGroup, error) {
+	cfgSarama := sarama.NewConfig()
+	cfgSarama.Consumer.Group.Rebalance.Strategy = sarama.NewBalanceStrategyRoundRobin()
+	cfgSarama.Consumer.Offsets.Initial = sarama.OffsetOldest
+	consumer, err := sarama.NewConsumerGroup(cfg.GetKafka().Brockers, groupID, cfgSarama)
+	return consumer, err
+}
+
 func PrepareMessage(topic string, message []byte) *sarama.ProducerMessage {
 	msg := &sarama.ProducerMessage{
 		Topic:     topic,

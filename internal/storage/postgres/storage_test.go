@@ -5,10 +5,11 @@ import (
 	"database/sql"
 	"messageprocessor/internal/model"
 	post "messageprocessor/internal/storage/postgres"
+	storage "messageprocessor/internal/storage/postgres"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	// "gotest.tools/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPostMessage(t *testing.T) {
@@ -56,26 +57,22 @@ func TestPostMessage(t *testing.T) {
 		}
 
 		mock.ExpectBegin()
-		mock.ExpectPrepare("INSERT INTO message \\(content\\) VALUES\\(\\$1\\)").ExpectExec().WithArgs(test.argfirstQuery).WillReturnResult(sqlmock.NewResult(test.returnfirstQuery[0], test.returnfirstQuery[1]))
-		mock.ExpectPrepare("INSERT INTO outbox \\(content, status, create_at\\) VALUES\\(\\$1, \\$2, \\$3\\)").ExpectExec().WithArgs(test.argsecondQuery[0], test.argsecondQuery[1], sqlmock.AnyArg()).WillReturnResult(sqlmock.NewResult(test.returnsecondQuery[0], test.returnsecondQuery[1]))
+		mock.ExpectPrepare("INSERT INTO message \\(content, status\\) VALUES\\(\\$1, 'none'\\)").ExpectExec().WithArgs(test.argfirstQuery).WillReturnResult(sqlmock.NewResult(test.returnfirstQuery[0], test.returnfirstQuery[1]))
+		mock.ExpectPrepare("INSERT INTO outbox \\(content, status\\) VALUES\\(\\$1, \\$2\\)").ExpectExec().WithArgs(test.argsecondQuery[0], test.argsecondQuery[1]).WillReturnResult(sqlmock.NewResult(test.returnsecondQuery[0], test.returnsecondQuery[1]))
 		mock.ExpectCommit()
 
-		if err = service.PostMessage(test.argfirstQuery); err != nil {
-			t.Errorf("error was not expected while updating stats: %s", err)
-		}
+		err = service.PostMessage(test.argfirstQuery)
+		assert.NoError(t, err)
 
-		if err := mock.ExpectationsWereMet(); err != nil {
-			t.Errorf("there were unfulfilled expectations: %s", err)
-		}
+		err = mock.ExpectationsWereMet()
+		assert.NoError(t, err)
 	}
 
 }
 
 func TestGetNewOutbox(t *testing.T) {
 	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-	}
+	assert.NoError(t, err)
 	defer db.Close()
 
 	service := post.NewMessageStorage(db)
@@ -183,9 +180,8 @@ func TestGetNewOutbox(t *testing.T) {
 				t.Errorf("%s: expected message '%v', got '%v'", test.Name, test.ExpectedMessage, msgRes)
 			}
 
-			if err := mock.ExpectationsWereMet(); err != nil {
-				t.Errorf("%s: there were unfulfilled expectations: %s", test.Name, err)
-			}
+			err = mock.ExpectationsWereMet()
+			assert.NoError(t, err)
 		})
 	}
 }
@@ -252,10 +248,55 @@ func TestSetDown(t *testing.T) {
 				t.Errorf("%s: expected error '%v', but got nil", test.Name, test.ExpectedError)
 			}
 
-			if err := mock.ExpectationsWereMet(); err != nil {
-				t.Errorf("%s: there were unfulfilled expectations: %s", test.Name, err)
-			}
+			err = mock.ExpectationsWereMet()
+			assert.NoError(t, err)
 		})
 	}
 
+}
+
+func TestMessageStorage_AddProcessedMessage(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	assert.NoError(t, err)
+	defer db.Close()
+
+	storage := storage.NewMessageStorage(db)
+
+	mock.ExpectPrepare("UPDATE message SET status = 'update', processed_content = \\$1 WHERE id = \\$2").
+		ExpectExec().
+		WithArgs("Processed content", 1).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	err = storage.AddProcessedMessage(1, "Processed content")
+	assert.NoError(t, err)
+
+	err = mock.ExpectationsWereMet()
+	assert.NoError(t, err)
+}
+
+func TestGetDownMessages_Success(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	assert.NoError(t, err)
+	defer db.Close()
+
+	service := storage.NewMessageStorage(db)
+
+	rows := sqlmock.NewRows([]string{"id", "content", "processed_content", "status"}).
+		AddRow(1, "test content", "processed content", "update").
+		AddRow(2, "another content", "another processed content", "update")
+
+	mock.ExpectQuery("SELECT id, content, processed_content, status FROM message WHERE status = 'update'").
+		WillReturnRows(rows)
+
+	expectedResult := []model.Message{
+		{ID: 1, Content: "test content", ProcessedContent: "processed content", Status: "update"},
+		{ID: 2, Content: "another content", ProcessedContent: "another processed content", Status: "update"},
+	}
+
+	result, err := service.GetDownMessages()
+	assert.NoError(t, err)
+	assert.Equal(t, expectedResult, result)
+
+	err = mock.ExpectationsWereMet()
+	assert.NoError(t, err)
 }

@@ -12,4 +12,5 @@ func NewServer(logger *slog.Logger, cfg *config.Config, service services.Service
 	addRouters(mux, logger, service)
 	var handler http.Handler = mux
 	return handler
+
 }

@@ -7,7 +7,7 @@ import (
 	"log/slog"
 	"messageprocessor/internal/app"
 	"messageprocessor/internal/config"
-	messagesender "messageprocessor/internal/services/message_sender"
+	"messageprocessor/internal/services"
 	storagep "messageprocessor/internal/storage/postgres"
 	"messageprocessor/pkg/kafka"
 	"messageprocessor/pkg/postgres"
@@ -50,7 +50,14 @@ func RunApp(ctx context.Context, write io.Writer) error {
 	if err != nil {
 		return err
 	}
-	service := messagesender.New(storage, producer, log)
+
+	consumer, err := kafka.NewConsumerGroup(cfg, "readProcessorMessage")
+
+	if err != nil {
+		return err
+	}
+
+	service := services.NewServices(storage, consumer, producer, log)
 
 	server := app.NewServer(log, cfg, service)
 
@@ -67,6 +74,7 @@ func RunApp(ctx context.Context, write io.Writer) error {
 	}()
 
 	service.StartProcessingMessage(ctx, time.Second*10)
+	service.StartConsumerProcessingMessage(ctx)
 
 	var wg sync.WaitGroup
 	wg.Add(1)

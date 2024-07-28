@@ -14,70 +14,6 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockService is a mock of Service interface.
-type MockService struct {
-	ctrl     *gomock.Controller
-	recorder *MockServiceMockRecorder
-}
-
-// MockServiceMockRecorder is the mock recorder for MockService.
-type MockServiceMockRecorder struct {
-	mock *MockService
-}
-
-// NewMockService creates a new mock instance.
-func NewMockService(ctrl *gomock.Controller) *MockService {
-	mock := &MockService{ctrl: ctrl}
-	mock.recorder = &MockServiceMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockService) EXPECT() *MockServiceMockRecorder {
-	return m.recorder
-}
-
-// SaveMessage mocks base method.
-func (m *MockService) SaveMessage(msg string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveMessage", msg)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// SaveMessage indicates an expected call of SaveMessage.
-func (mr *MockServiceMockRecorder) SaveMessage(msg interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveMessage", reflect.TypeOf((*MockService)(nil).SaveMessage), msg)
-}
-
-// SentMessages mocks base method.
-func (m *MockService) SentMessages() ([]model.MessageState, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SentMessages")
-	ret0, _ := ret[0].([]model.MessageState)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// SentMessages indicates an expected call of SentMessages.
-func (mr *MockServiceMockRecorder) SentMessages() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SentMessages", reflect.TypeOf((*MockService)(nil).SentMessages))
-}
-
-// StartProcessingMessage mocks base method.
-func (m *MockService) StartProcessingMessage(ctx context.Context, handlePeriod time.Duration) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "StartProcessingMessage", ctx, handlePeriod)
-}
-
-// StartProcessingMessage indicates an expected call of StartProcessingMessage.
-func (mr *MockServiceMockRecorder) StartProcessingMessage(ctx, handlePeriod interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartProcessingMessage", reflect.TypeOf((*MockService)(nil).StartProcessingMessage), ctx, handlePeriod)
-}
-
 // MockSyncProducer is a mock of SyncProducer interface.
 type MockSyncProducer struct {
 	ctrl     *gomock.Controller
@@ -241,4 +177,193 @@ func (m *MockSyncProducer) TxnStatus() sarama.ProducerTxnStatusFlag {
 func (mr *MockSyncProducerMockRecorder) TxnStatus() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TxnStatus", reflect.TypeOf((*MockSyncProducer)(nil).TxnStatus))
+}
+
+// MockConsumerGroup is a mock of ConsumerGroup interface.
+type MockConsumerGroup struct {
+	ctrl     *gomock.Controller
+	recorder *MockConsumerGroupMockRecorder
+}
+
+// MockConsumerGroupMockRecorder is the mock recorder for MockConsumerGroup.
+type MockConsumerGroupMockRecorder struct {
+	mock *MockConsumerGroup
+}
+
+// NewMockConsumerGroup creates a new mock instance.
+func NewMockConsumerGroup(ctrl *gomock.Controller) *MockConsumerGroup {
+	mock := &MockConsumerGroup{ctrl: ctrl}
+	mock.recorder = &MockConsumerGroupMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockConsumerGroup) EXPECT() *MockConsumerGroupMockRecorder {
+	return m.recorder
+}
+
+// Close mocks base method.
+func (m *MockConsumerGroup) Close() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Close")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Close indicates an expected call of Close.
+func (mr *MockConsumerGroupMockRecorder) Close() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockConsumerGroup)(nil).Close))
+}
+
+// Consume mocks base method.
+func (m *MockConsumerGroup) Consume(ctx context.Context, topics []string, handler sarama.ConsumerGroupHandler) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Consume", ctx, topics, handler)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Consume indicates an expected call of Consume.
+func (mr *MockConsumerGroupMockRecorder) Consume(ctx, topics, handler interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Consume", reflect.TypeOf((*MockConsumerGroup)(nil).Consume), ctx, topics, handler)
+}
+
+// Errors mocks base method.
+func (m *MockConsumerGroup) Errors() <-chan error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Errors")
+	ret0, _ := ret[0].(<-chan error)
+	return ret0
+}
+
+// Errors indicates an expected call of Errors.
+func (mr *MockConsumerGroupMockRecorder) Errors() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Errors", reflect.TypeOf((*MockConsumerGroup)(nil).Errors))
+}
+
+// Pause mocks base method.
+func (m *MockConsumerGroup) Pause(partitions map[string][]int32) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Pause", partitions)
+}
+
+// Pause indicates an expected call of Pause.
+func (mr *MockConsumerGroupMockRecorder) Pause(partitions interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Pause", reflect.TypeOf((*MockConsumerGroup)(nil).Pause), partitions)
+}
+
+// PauseAll mocks base method.
+func (m *MockConsumerGroup) PauseAll() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "PauseAll")
+}
+
+// PauseAll indicates an expected call of PauseAll.
+func (mr *MockConsumerGroupMockRecorder) PauseAll() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PauseAll", reflect.TypeOf((*MockConsumerGroup)(nil).PauseAll))
+}
+
+// Resume mocks base method.
+func (m *MockConsumerGroup) Resume(partitions map[string][]int32) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Resume", partitions)
+}
+
+// Resume indicates an expected call of Resume.
+func (mr *MockConsumerGroupMockRecorder) Resume(partitions interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Resume", reflect.TypeOf((*MockConsumerGroup)(nil).Resume), partitions)
+}
+
+// ResumeAll mocks base method.
+func (m *MockConsumerGroup) ResumeAll() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "ResumeAll")
+}
+
+// ResumeAll indicates an expected call of ResumeAll.
+func (mr *MockConsumerGroupMockRecorder) ResumeAll() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResumeAll", reflect.TypeOf((*MockConsumerGroup)(nil).ResumeAll))
+}
+
+// MockService is a mock of Service interface.
+type MockService struct {
+	ctrl     *gomock.Controller
+	recorder *MockServiceMockRecorder
+}
+
+// MockServiceMockRecorder is the mock recorder for MockService.
+type MockServiceMockRecorder struct {
+	mock *MockService
+}
+
+// NewMockService creates a new mock instance.
+func NewMockService(ctrl *gomock.Controller) *MockService {
+	mock := &MockService{ctrl: ctrl}
+	mock.recorder = &MockServiceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockService) EXPECT() *MockServiceMockRecorder {
+	return m.recorder
+}
+
+// SaveMessage mocks base method.
+func (m *MockService) SaveMessage(msg string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveMessage", msg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveMessage indicates an expected call of SaveMessage.
+func (mr *MockServiceMockRecorder) SaveMessage(msg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveMessage", reflect.TypeOf((*MockService)(nil).SaveMessage), msg)
+}
+
+// SentMessages mocks base method.
+func (m *MockService) SentMessages() ([]model.Message, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SentMessages")
+	ret0, _ := ret[0].([]model.Message)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SentMessages indicates an expected call of SentMessages.
+func (mr *MockServiceMockRecorder) SentMessages() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SentMessages", reflect.TypeOf((*MockService)(nil).SentMessages))
+}
+
+// StartConsumerProcessingMessage mocks base method.
+func (m *MockService) StartConsumerProcessingMessage(ctx context.Context) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "StartConsumerProcessingMessage", ctx)
+}
+
+// StartConsumerProcessingMessage indicates an expected call of StartConsumerProcessingMessage.
+func (mr *MockServiceMockRecorder) StartConsumerProcessingMessage(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartConsumerProcessingMessage", reflect.TypeOf((*MockService)(nil).StartConsumerProcessingMessage), ctx)
+}
+
+// StartProcessingMessage mocks base method.
+func (m *MockService) StartProcessingMessage(ctx context.Context, handlePeriod time.Duration) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "StartProcessingMessage", ctx, handlePeriod)
+}
+
+// StartProcessingMessage indicates an expected call of StartProcessingMessage.
+func (mr *MockServiceMockRecorder) StartProcessingMessage(ctx, handlePeriod interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartProcessingMessage", reflect.TypeOf((*MockService)(nil).StartProcessingMessage), ctx, handlePeriod)
 }

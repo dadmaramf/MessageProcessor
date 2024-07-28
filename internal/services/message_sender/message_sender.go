@@ -7,13 +7,12 @@ import (
 	"github.com/IBM/sarama"
 	"log/slog"
 	"messageprocessor/internal/model"
-	"messageprocessor/internal/services"
 	"messageprocessor/internal/storage"
 	"messageprocessor/pkg/kafka"
 	"time"
 )
 
-var _ services.Service = (*Sender)(nil)
+var _ ServiceSender = (*Sender)(nil)
 
 type Sender struct {
 	storage storage.Storage
@@ -33,7 +32,7 @@ func (s *Sender) SaveMessage(msg string) error {
 	return s.storage.PostMessage(msg)
 }
 
-func (s *Sender) SentMessages() ([]model.MessageState, error) {
+func (s *Sender) SentMessages() ([]model.Message, error) {
 	msgs, err := s.storage.GetDownMessages()
 	return msgs, err
 }
@@ -80,6 +79,10 @@ func (s *Sender) StartProcessingMessage(ctx context.Context, handlePeriod time.D
 			log.Info("message send")
 		}
 	}()
+}
+
+func (s *Sender) StartConsumerProcessingMessage(ctx context.Context, handlePeriod time.Duration) {
+
 }
 
 // sendMessage sends a message to Kafka.

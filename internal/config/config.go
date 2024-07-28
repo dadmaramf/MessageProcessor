@@ -1,6 +1,3 @@
-// Package config provides configuration loading and access functionalities.
-// It reads configuration from a YAML file and makes it accessible through
-// various getter methods.
 package config
 
 import (
