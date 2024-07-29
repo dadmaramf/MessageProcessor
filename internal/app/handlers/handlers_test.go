@@ -58,7 +58,7 @@ func TestSaveMessage(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			body, _ := json.Marshal(test.requestBody)
-			req := httptest.NewRequest(http.MethodPost, "/message", bytes.NewReader(body))
+			req := httptest.NewRequest(http.MethodPost, "/submit", bytes.NewReader(body))
 			w := httptest.NewRecorder()
 
 			if test.expectedStatus != http.StatusBadRequest {
@@ -103,7 +103,7 @@ func TestSentMessages(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			req := httptest.NewRequest(http.MethodGet, "/message/state", nil)
+			req := httptest.NewRequest(http.MethodGet, "/state", nil)
 			w := httptest.NewRecorder()
 
 			mockService.EXPECT().SentMessages().Return(test.messages, test.getMessagesErr)

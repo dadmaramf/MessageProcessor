@@ -9,4 +9,5 @@ COPY . .
 
 ENTRYPOINT go build -v -o /usr/local/bin/app/ ./... 
 
+# docker build -t gobuild -f Dockerfile.gobuild .
 # docker run --rm -v "$PWD/build":/usr/local/bin/app/ -w /usr/src/app gobuild 
