@@ -40,7 +40,7 @@ func SaveMessage(log *slog.Logger, service services.Service) http.HandlerFunc {
 	}
 }
 
-// GET/message/state
+// GET/state
 func SentMessages(log *slog.Logger, service services.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "api.handler.SentMessages"
