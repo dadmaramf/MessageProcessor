@@ -2,16 +2,21 @@ package postgres
 
 import (
 	"database/sql"
-	_ "github.com/lib/pq"
+	"fmt"
 	"messageprocessor/internal/config"
+
+	_ "github.com/lib/pq"
 )
 
 func NewPostgresDB(cfg config.ConfigInterface) (*sql.DB, error) {
-	connStr := "user=" + cfg.GetPostgresConnect().User +
-		" dbname=" + cfg.GetPostgresConnect().DBname +
-		" password=" + cfg.GetPostgresConnect().Password +
-		" sslmode=disable"
-
+	connStr := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		cfg.GetPostgresConnect().User,
+		cfg.GetPostgresConnect().Password,
+		cfg.GetPostgresConnect().Host,
+		cfg.GetPostgresConnect().Port,
+		cfg.GetPostgresConnect().DBname,
+	)
 	con, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, err

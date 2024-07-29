@@ -1,6 +1,0 @@
-version: "3.0"
-
-tasks:
-  migrations:
-  cmd:
-    - go run ./cmd/migrator/main.go --migrations-path=./migrations --storage-path="user:password@localhost:5432/messages"

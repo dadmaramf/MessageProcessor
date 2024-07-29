@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// POST/message
+// POST/submit
 func SaveMessage(log *slog.Logger, service services.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "api.handler.SaveMessage"

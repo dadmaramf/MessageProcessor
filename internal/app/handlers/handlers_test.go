@@ -84,13 +84,13 @@ func TestSentMessages(t *testing.T) {
 	tests := []struct {
 		name           string
 		expectedStatus int
-		messages       []model.MessageState
+		messages       []model.Message
 		getMessagesErr error
 	}{
 		{
 			name:           "Success",
 			expectedStatus: http.StatusOK,
-			messages:       []model.MessageState{{ID: 1, Content: "test message"}},
+			messages:       []model.Message{{ID: 1, Content: "test message"}},
 			getMessagesErr: nil,
 		},
 		{

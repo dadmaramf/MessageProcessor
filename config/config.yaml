@@ -1,17 +1,17 @@
 httpClient:
-  host: "localhost"
-  port: "8080"
+  host: "app"
+  port: "8081"
 
 postgresConnect:
-  host: "localhost"
-  port: ":5432"
+  host: "postgres"
+  port: "5432"
   user: "user"
   password: "password"
   dbname: "messages"
 
 kafka:
   brockers:
-    - "localhost:9095"
-    - "localhost:9096"
-    - "localhost:9097"
+    - "kafka:9092"
+    # - "kafka-2:9092"
+    # - "kafka-3:9092"
   topic: "message"
