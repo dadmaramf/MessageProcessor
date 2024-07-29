@@ -1,0 +1,29 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task: tests
+      - task: build
+      - task: up
+
+  tests:
+    cmds: 
+      - go test ./...
+
+  build: 
+    cmds: 
+      - docker build -t gobuild -f Dockerfile.gobuild .
+      - docker run --rm -v "$PWD/build":/usr/local/bin/app/ -w /usr/src/app gobuild  
+
+  up:
+    cmds:
+      - docker-compose up -d
+
+  down:
+    cmds:
+      - docker-compose down
+
+
+
+
